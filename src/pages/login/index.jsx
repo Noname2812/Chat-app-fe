@@ -9,12 +9,13 @@ import {
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { setConnectionSignalr } from "../../redux/reducers/chatReducers";
 import { fetchRoomId } from "../../redux/thunkApi";
+import ButtonLoginWithGoogle from "../../components/ButtonLoginWithGoogle";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const handleSubmitLogin = async (values) => {
-    const res = await fetch("http://localhost:5264/api/auth/login", {
+  const handleSubmitLogin = async (values, enpoint = "login") => {
+    const res = await fetch(`http://localhost:5264/api/auth/${enpoint}`, {
       method: "POST",
       body: JSON.stringify(values),
       headers: {
@@ -75,6 +76,9 @@ const LoginPage = () => {
           </Button>
         </Form.Item>
       </Form>
+      <div>
+        <ButtonLoginWithGoogle handleSubmitLogin={handleSubmitLogin} />
+      </div>
     </div>
   );
 };
