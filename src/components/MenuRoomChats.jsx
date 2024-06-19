@@ -31,7 +31,7 @@ const MenuRoomChats = ({ onClick, roomIdSelectd }) => {
           <div>
             <p className="text-xl font-bold">{room.name}</p>
             <p>{`${
-              room.messages?.[0]?.user?.id === user.id
+              room.messages?.[0]?.userId === user.id
                 ? `Bạn: ${room.messages?.[0]?.content}`
                 : room.messages?.[0]?.content || ""
             }`}</p>

@@ -3,7 +3,7 @@ export const replaceMessagesToRoom = (rooms, roomId, messages) => {
     if (Number(room.id) === Number(roomId)) {
       return {
         ...room,
-        messages: messages,
+        messages: messages?.messages,
       };
     }
     return room;

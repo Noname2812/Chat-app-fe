@@ -28,7 +28,7 @@ const DisplayList = ({ roomId }) => {
       });
   };
   useEffect(() => {
-    setData(findRoomById(rooms, roomId)?.messages?.messages || []);
+    setData(findRoomById(rooms, roomId)?.messages || []);
   }, [roomId, rooms]);
   return (
     <div
