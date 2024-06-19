@@ -1,16 +1,15 @@
-import { useAppSelector } from "../redux/store";
-import { getChatState } from "../redux/reducers/chatReducers";
-import { getAuthState } from "../redux/reducers/authReducers";
+import { roomApi } from "../api/roomApi";
 
-const ListUserOnline = ({ data, setRoomSelected }) => {
-  const { hubConnection } = useAppSelector(getChatState);
-  const { user } = useAppSelector(getAuthState);
-  const handleOnClick = async (id) => {
-    if (hubConnection) {
-      await hubConnection.invoke("JoinPrivateRoomChat", {
-        from: user.id,
-        to: id,
-      });
+const ListUserOnline = ({ data }) => {
+  const handleChoice = async (id) => {
+    try {
+      const res = await roomApi.getPrivateRoomWithUserId(id);
+      if (!res.data?.data) {
+        // create new room local
+      }
+      console.log(res.data);
+    } catch (error) {
+      console.log(error);
     }
   };
   return (
@@ -21,7 +20,7 @@ const ListUserOnline = ({ data, setRoomSelected }) => {
           <div
             className="bg-blue-100 py-4 px-2 font-bold"
             key={user.connectionId}
-            onClick={() => handleOnClick(user.userId)}
+            onClick={() => handleChoice(user.userId)}
           >
             {user.name}
           </div>

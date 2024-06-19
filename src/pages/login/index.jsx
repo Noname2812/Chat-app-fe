@@ -7,49 +7,26 @@ import {
   loginSuccess,
 } from "../../redux/reducers/authReducers";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
-import { setConnectionSignalr } from "../../redux/reducers/chatReducers";
 import { fetchRoomId } from "../../redux/thunkApi";
 import ButtonLoginWithGoogle from "../../components/ButtonLoginWithGoogle";
+import { authApi } from "../../api/authApi";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const handleSubmitLogin = async (values, enpoint = "login") => {
-    const res = await fetch(`http://localhost:5264/api/auth/${enpoint}`, {
-      method: "POST",
-      body: JSON.stringify(values),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await res.json();
-    if (res.ok) {
-      const conn = new HubConnectionBuilder()
-        .withUrl("http://localhost:5264/hub")
-        .configureLogging(LogLevel.Information)
-        .build();
-      await conn.start();
-      conn.invoke("AddUserConnection", {
-        userId: data.data.user?.id,
-        name: data.data.user?.name,
-      });
-      conn.on("NotifyUserOnline", (name) => toast(`${name} was online !`));
-      conn.on("GetListUserOnline", (users) =>
-        dispatch(getFriendsOnline(users))
-      );
-      conn.on("ReceiveMessagePrivate", (id) => {
-        dispatch(fetchRoomId({ roomId: id }));
-      });
-      dispatch(setConnectionSignalr(conn));
+  const handleSubmitLogin = async (values) => {
+    try {
+      const res = await authApi.login(values);
       dispatch(
         loginSuccess({
-          ...data.data.user,
-          token: data.data.token,
+          ...res.data.data.user,
+          token: res.data?.data?.token,
+          refreshToken: res.data?.data?.refreshToken,
         })
       );
       toast.success("Login successfully !");
       navigate("/");
-    } else {
+    } catch (error) {
       toast.error("Username or password is wrong !");
     }
   };

@@ -3,7 +3,18 @@ import "./styles/index.css";
 import HomeComponent from "./pages/home";
 import LoginPage from "./pages/login";
 import { RequireAuth } from "./components/RequiredAuth";
+import { useAppSelector } from "./redux/store";
+import { getAuthState } from "./redux/reducers/authReducers";
+import { useEffect } from "react";
+import { HubConnection } from "./lib/HubConnection";
 function App() {
+  const { user } = useAppSelector(getAuthState);
+  useEffect(() => {
+    if (user) {
+      HubConnection.connection(user);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id]);
   return (
     <>
       {/* <Header /> */}
@@ -28,4 +39,3 @@ function App() {
 }
 
 export default App;
-// https://viblo.asia/p/react-router-dom-v6-maGK7BQB5j2

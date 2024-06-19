@@ -1,10 +1,11 @@
 import { combineReducers } from "@reduxjs/toolkit";
 import authReducers from "./authReducers";
 import chatReducers from "./chatReducers";
-import { apiSlice } from "../../api/apiSilce";
+import roomReducers from "./roomReducer";
+
 const rootReducer = combineReducers({
   auth: authReducers,
   chat: chatReducers,
-  [apiSlice.reducerPath]: apiSlice.reducer,
+  room: roomReducers,
 });
 export default rootReducer;

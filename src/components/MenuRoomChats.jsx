@@ -1,15 +1,19 @@
-import { Card } from "antd";
 import { useAppDispatch, useAppSelector } from "../redux/store";
-import { fetchRooms } from "../redux/thunkApi";
-import { getChatState } from "../redux/reducers/chatReducers";
 import { useEffect } from "react";
+import { fetchRoomId, fetchRooms } from "../redux/asyncThunk/roomThunk";
+import { getRoomsState } from "../redux/reducers/roomReducer";
+import { getAuthState } from "../redux/reducers/authReducers";
+import { Card } from "antd";
 
-const MenuRoomChats = ({ roomSelected, setRoomSelected, userId }) => {
-  const { rooms } = useAppSelector(getChatState);
+const MenuRoomChats = ({ onClick, roomIdSelectd }) => {
+  const { rooms } = useAppSelector(getRoomsState);
+  const { user } = useAppSelector(getAuthState);
   const dispatch = useAppDispatch();
-
-  const handleChooseRoom = (id) => {
-    setRoomSelected(id);
+  const handleChoiceRoom = (roomId) => {
+    if (roomIdSelectd !== roomId || !roomIdSelectd) {
+      dispatch(fetchRoomId({ roomId }));
+      onClick(roomId);
+    }
   };
   useEffect(() => {
     dispatch(fetchRooms());
@@ -20,14 +24,14 @@ const MenuRoomChats = ({ roomSelected, setRoomSelected, userId }) => {
         <Card
           key={room.id}
           className={` hover:opacity-90 cursor-pointer ${
-            roomSelected === room?.id ? "bg-green-200" : "bg-green-400"
+            roomIdSelectd === room?.id ? "bg-green-200" : "bg-green-400"
           }`}
-          onClick={() => handleChooseRoom(room.id)}
+          onClick={() => handleChoiceRoom(room.id)}
         >
           <div>
             <p className="text-xl font-bold">{room.name}</p>
             <p>{`${
-              room.messages?.[0]?.user?.id === userId
+              room.messages?.[0]?.user?.id === user.id
                 ? `Bạn: ${room.messages?.[0]?.content}`
                 : room.messages?.[0]?.content || ""
             }`}</p>
