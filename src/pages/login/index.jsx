@@ -2,16 +2,13 @@ import { Button, Form, Input } from "antd";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAppDispatch } from "../../redux/store";
-import {
-  getFriendsOnline,
-  loginSuccess,
-} from "../../redux/reducers/authReducers";
-import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
-import { fetchRoomId } from "../../redux/thunkApi";
+import { loginSuccess } from "../../redux/reducers/authReducers";
+
 import ButtonLoginWithGoogle from "../../components/ButtonLoginWithGoogle";
 import { authApi } from "../../api/authApi";
+import { useEffect } from "react";
 
-const LoginPage = () => {
+const LoginPage = ({ user }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const handleSubmitLogin = async (values) => {
@@ -30,31 +27,35 @@ const LoginPage = () => {
       toast.error("Username or password is wrong !");
     }
   };
+  useEffect(() => {
+    if (user) navigate("/");
+  }, [navigate, user]);
   return (
-    <div>
-      <Form onFinish={handleSubmitLogin}>
-        <Form.Item
-          name="username"
-          label="Username"
-          rules={[{ required: true, message: "Please input your username!" }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          name="password"
-          label="Password"
-          rules={[{ required: true, message: "Please input your password!" }]}
-        >
-          <Input.Password />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
+    <div className="w-full h-[80vh] flex items-center justify-center">
+      <div className="flex flex-col gap-4 p-32 shadow-xl">
+        <h2 className="text-4xl text-center font-bold">Login</h2>
+        <Form onFinish={handleSubmitLogin} layout="vertical">
+          <Form.Item
+            name="username"
+            label="Username"
+            rules={[{ required: true, message: "Please input your username!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="password"
+            label="Password"
+            rules={[{ required: true, message: "Please input your password!" }]}
+          >
+            <Input.Password />
+          </Form.Item>
+          <Button type="primary" htmlType="submit" className="w-full">
             Submit
           </Button>
-        </Form.Item>
-      </Form>
-      <div>
-        <ButtonLoginWithGoogle handleSubmitLogin={handleSubmitLogin} />
+        </Form>
+        <div className="flex justify-center">
+          <ButtonLoginWithGoogle handleSubmitLogin={handleSubmitLogin} />
+        </div>
       </div>
     </div>
   );

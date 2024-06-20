@@ -9,10 +9,17 @@ const conn = new HubConnectionBuilder()
   .configureLogging(LogLevel.Information)
   .withAutomaticReconnect()
   .build();
-
+conn.connectionState = "disconnected";
+conn.onreconnected(() => {
+  conn.connectionState = "connected";
+});
+conn.onclose(() => {
+  conn.connectionState = "disconnected";
+});
 const connect = async (user) => {
-  if (user) {
+  if (user && conn.connectionState === "disconnected") {
     await conn.start();
+    conn.connectionState = "connected";
     conn.invoke("AddUserConnection", {
       userId: user?.id,
       name: user?.name,
@@ -30,13 +37,22 @@ const connect = async (user) => {
   }
 };
 const sendMessage = async ({ from, roomId, message, isPrivate }) => {
-  if (conn.connectionId !== null) {
-    await conn.invoke("SendMessage", { from, roomId, message, isPrivate });
+  try {
+    if (conn.connectionState === "connected") {
+      await conn.invoke("SendMessage", { from, roomId, message, isPrivate });
+    }
+  } catch (error) {
+    console.log(error);
   }
 };
 export const HubConnection = {
   connection: async (user) => await connect(user),
   chat: ({ from, roomId, message, isPrivate }) =>
     sendMessage({ from, roomId, message, isPrivate }),
-  disconnect: () => conn.stop(),
+  disconnect: () => {
+    if ((conn.connectionState = "connected")) {
+      conn.stop();
+      conn.connectionState = "disconnected";
+    }
+  },
 };

@@ -1,7 +1,7 @@
 import MenuRoomChats from "../../components/MenuRoomChats";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { getAuthState } from "../../redux/reducers/authReducers";
-import { Button, Form, Input } from "antd";
+import { Button, Col, Form, Input, Row } from "antd";
 import ListUserOnline from "../../components/ListUserOnline";
 import DisplayList from "../../components/DisplayList";
 import MUploadImageMultiple from "../../components/MUploadImageMultiple";
@@ -26,12 +26,13 @@ const HomeComponent = () => {
         from: authState?.user?.id,
         isPrivate: true,
       });
+      form.setFieldsValue({ message: "", images: [] });
     } catch (error) {
       toast.error("Có lỗi xảy ra vui lòng thử lại sau !");
     }
   };
   return (
-    <main className="pt-2 px-32 w-screen">
+    <main className="pt-2 px-32 max-w-screen overflow-x-hidden">
       <div>
         <h2 className="text-2xl text-center font-bold py-4">
           Chào mừng đến chat app
@@ -50,15 +51,23 @@ const HomeComponent = () => {
               form={form}
               initialValues={{ message: "", images: [] }}
             >
-              <Form.Item name="message">
-                <Input.TextArea rows={2} />
-              </Form.Item>
-              <MUploadImageMultiple
-                initFileList={form.getFieldValue("images")}
-              />
-              <Button htmlType="submit" type="primary">
-                Chat
-              </Button>
+              <Row justify={"space-between"}>
+                <Col span={16}>
+                  <Form.Item name="message">
+                    <Input.TextArea rows={4} />
+                  </Form.Item>
+                </Col>
+                <Col span={3}>
+                  <MUploadImageMultiple
+                    initFileList={form.getFieldValue("images")}
+                  />
+                </Col>
+                <Col span={3}>
+                  <Button htmlType="submit" type="primary" className="w-full ">
+                    Chat
+                  </Button>
+                </Col>
+              </Row>
             </Form>
           </div>
         </div>

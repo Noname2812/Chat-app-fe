@@ -5,4 +5,7 @@ export const authApi = {
   login(body) {
     return axiosClient.post(URL + "/login", body);
   },
+  logout() {
+    return axiosClient.post(URL + "/logout");
+  },
 };

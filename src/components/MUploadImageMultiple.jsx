@@ -37,7 +37,6 @@ const MUploadImageMultiple = (props) => {
   return (
     <>
       <Form.Item
-        label="Images"
         name={"images"}
         getValueFromEvent={getFile}
         rules={[

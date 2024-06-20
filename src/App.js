@@ -7,6 +7,9 @@ import { useAppSelector } from "./redux/store";
 import { getAuthState } from "./redux/reducers/authReducers";
 import { useEffect } from "react";
 import { HubConnection } from "./lib/HubConnection";
+import Header from "./components/layout/Header";
+
+import { routePrivate } from "./constants";
 function App() {
   const { user } = useAppSelector(getAuthState);
   useEffect(() => {
@@ -17,19 +20,17 @@ function App() {
   }, [user?.id]);
   return (
     <>
-      {/* <Header /> */}
+      <Header />
       <Routes>
-        <Route path="/login" element={<LoginPage />} default />
-        <Route
-          path="/"
-          element={
-            <RequireAuth>
-              <HomeComponent />
-            </RequireAuth>
-          }
-        />
+        <Route path="/login" element={<LoginPage user={user} />} default />
         <Route path="/register" element={<></>} />
-        <Route path="/courses" element={<div>product</div>} />
+        {routePrivate.map((route) => (
+          <Route
+            path={route.path}
+            element={<RequireAuth>{route.component}</RequireAuth>}
+            key={route.path}
+          />
+        ))}
         <Route path="/courses/:courseId" element={<div>detail</div>} />
         <Route path="*" element={<div>Not found</div>} />
       </Routes>
