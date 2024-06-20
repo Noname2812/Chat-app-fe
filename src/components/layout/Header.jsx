@@ -72,8 +72,14 @@ const Header = () => {
                 size={64}
                 className="bg-green-500"
                 icon={
-                  user?.image ? (
-                    <Image src={user?.image} preview={false} />
+                  user?.avatar ? (
+                    <Image
+                      src={user?.avatar}
+                      preview={false}
+                      className="rounded-full"
+                      width={64}
+                      height={64}
+                    />
                   ) : (
                     <FontAwesomeIcon icon={faUser} />
                   )

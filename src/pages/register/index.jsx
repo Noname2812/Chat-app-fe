@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../redux/store";
 import { authApi } from "../../api/authApi";
 import { toast } from "react-toastify";
 import { Button, Form, Input } from "antd";
@@ -12,7 +11,6 @@ const Register = ({ user }) => {
     const { confirmPassword, ...rest } = values;
     try {
       await authApi.register(rest);
-
       toast.success("Register successfully !");
       navigate("/login");
     } catch (error) {

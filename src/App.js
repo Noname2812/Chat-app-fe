@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import "./styles/index.css";
-import HomeComponent from "./pages/home";
+
 import LoginPage from "./pages/login";
 import { RequireAuth } from "./components/RequiredAuth";
 import { useAppSelector } from "./redux/store";

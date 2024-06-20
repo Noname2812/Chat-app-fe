@@ -1,8 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { HubConnection } from "../../lib/HubConnection";
+import { updateProfile } from "../asyncThunk/userThunk";
+import { toast } from "react-toastify";
 const initialState = {
   user: undefined,
   friendsOnline: [],
+  isChanging: false,
 };
 const authSlices = createSlice({
   name: "authReducers",
@@ -24,6 +27,20 @@ const authSlices = createSlice({
         (user) => user.userId !== state.user.id
       );
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(updateProfile.pending, (state, action) => {
+      state.isChanging = true;
+    });
+    builder.addCase(updateProfile.rejected, (state, action) => {
+      state.isChanging = false;
+    });
+    builder.addCase(updateProfile.fulfilled, (state, action) => {
+      const temp = { ...state.user };
+      state.user = { ...temp, ...action.payload?.data?.user };
+      toast.success(action.payload?.data?.message);
+      state.isChanging = false;
+    });
   },
 });
 export const { loginSuccess, getFriendsOnline, setNewToken, logout } =
