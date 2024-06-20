@@ -31,10 +31,11 @@ const ButtonLoginWithGoogle = ({ handleSubmitLogin }) => {
     },
   });
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 w-full">
       <Button
         icon={<FontAwesomeIcon icon={faGoogle} color="red" />}
         onClick={() => handleLoginWithGoogle()}
+        className="w-full"
       >
         Login with Google
       </Button>

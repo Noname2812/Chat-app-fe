@@ -10,6 +10,7 @@ import { HubConnection } from "./lib/HubConnection";
 import Header from "./components/layout/Header";
 
 import { routePrivate } from "./constants";
+import Register from "./pages/register";
 function App() {
   const { user } = useAppSelector(getAuthState);
   useEffect(() => {
@@ -23,7 +24,7 @@ function App() {
       <Header />
       <Routes>
         <Route path="/login" element={<LoginPage user={user} />} default />
-        <Route path="/register" element={<></>} />
+        <Route path="/register" element={<Register user={user} />} />
         {routePrivate.map((route) => (
           <Route
             path={route.path}

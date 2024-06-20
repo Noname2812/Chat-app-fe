@@ -40,7 +40,7 @@ const LoginPage = ({ user }) => {
             label="Username"
             rules={[{ required: true, message: "Please input your username!" }]}
           >
-            <Input />
+            <Input className="w-[300px]" />
           </Form.Item>
           <Form.Item
             name="password"
@@ -55,6 +55,16 @@ const LoginPage = ({ user }) => {
         </Form>
         <div className="flex justify-center">
           <ButtonLoginWithGoogle handleSubmitLogin={handleSubmitLogin} />
+        </div>
+        <div className="flex justify-center">
+          <Button
+            type="default"
+            htmlType="button"
+            className="w-full"
+            onClick={() => navigate("/register")}
+          >
+            Register
+          </Button>
         </div>
       </div>
     </div>

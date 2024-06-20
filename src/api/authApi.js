@@ -8,4 +8,7 @@ export const authApi = {
   logout() {
     return axiosClient.post(URL + "/logout");
   },
+  register(body) {
+    return axiosClient.post(URL + "/register", body);
+  },
 };
