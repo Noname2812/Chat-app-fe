@@ -1,18 +1,18 @@
 import { useAppDispatch, useAppSelector } from "../redux/store";
 import { useEffect } from "react";
-import { fetchRoomId, fetchRooms } from "../redux/asyncThunk/roomThunk";
-import { getRoomsState } from "../redux/reducers/roomReducer";
+import { fetchRooms } from "../redux/asyncThunk/roomThunk";
+import { getRoomsState, setRoomSelected } from "../redux/reducers/roomReducer";
 import { getAuthState } from "../redux/reducers/authReducers";
 import { Card } from "antd";
+import { reNameRoom } from "../utils/functionHelper";
 
-const MenuRoomChats = ({ onClick, roomIdSelectd }) => {
-  const { rooms } = useAppSelector(getRoomsState);
+const MenuRoomChats = () => {
+  const { rooms, roomSelected } = useAppSelector(getRoomsState);
   const { user } = useAppSelector(getAuthState);
   const dispatch = useAppDispatch();
-  const handleChoiceRoom = (roomId) => {
-    if (roomIdSelectd !== roomId || !roomIdSelectd) {
-      dispatch(fetchRoomId({ roomId }));
-      onClick(roomId);
+  const handleChoiceRoom = (room) => {
+    if (roomSelected?.id !== room.id || !roomSelected) {
+      dispatch(setRoomSelected(room));
     }
   };
   useEffect(() => {
@@ -24,12 +24,14 @@ const MenuRoomChats = ({ onClick, roomIdSelectd }) => {
         <Card
           key={room.id}
           className={` hover:opacity-90 cursor-pointer ${
-            roomIdSelectd === room?.id ? "bg-green-200" : "bg-green-400"
+            roomSelected?.id === room?.id ? "bg-green-200" : "bg-green-400"
           }`}
-          onClick={() => handleChoiceRoom(room.id)}
+          onClick={() => handleChoiceRoom(room)}
         >
           <div>
-            <p className="text-xl font-bold">{room.name}</p>
+            <p className="text-xl font-bold">
+              {reNameRoom(room.name, user?.name)}
+            </p>
             <p className=" whitespace-nowrap overflow-hidden text-ellipsis">{`${
               room.messages?.[0]?.userId === user.id
                 ? `Bạn: ${room.messages?.[0]?.content || "[Hình ảnh]"}`

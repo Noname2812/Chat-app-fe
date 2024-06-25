@@ -10,11 +10,8 @@ export const fetchRooms = createAsyncThunk(
 );
 export const fetchRoomId = createAsyncThunk(
   "room/fetchRoomId",
-  async ({ roomId }, { dispatch }) => {
-    const result = await roomApi.getRoomById(roomId);
-    return {
-      roomId,
-      messages: result.data?.data,
-    };
+  async ({ roomId, offset, limit }, { dispatch }) => {
+    const result = await roomApi.getRoomById({ id: roomId, offset, limit });
+    return result.data?.data?.room;
   }
 );

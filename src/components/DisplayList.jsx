@@ -1,25 +1,32 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Image, List } from "antd";
-import { useAppSelector } from "../redux/store";
+import { useAppDispatch, useAppSelector } from "../redux/store";
 import { getAuthState } from "../redux/reducers/authReducers";
-import { findRoomById } from "../utils/functionHelper";
 import { getRoomsState } from "../redux/reducers/roomReducer";
-const DisplayList = ({ roomId }) => {
+import { fetchRoomId } from "../redux/asyncThunk/roomThunk";
+import { findRoomById } from "../utils/functionHelper";
+const DisplayList = () => {
   const { user } = useAppSelector(getAuthState);
-  const { rooms } = useAppSelector(getRoomsState);
+  const { roomSelected, rooms } = useAppSelector(getRoomsState);
   const [data, setData] = useState([]);
   const ref = useRef(null);
-
-  const handleScroll = async () => {
+  const dispatch = useAppDispatch();
+  const handleScroll = useCallback(() => {
     if (ref.current.scrollTop === 0) {
-      // fetch more data
+      dispatch(
+        fetchRoomId({
+          roomId: roomSelected?.id,
+          offset: data.length,
+          limit: 10,
+        })
+      );
     }
-  };
+  }, [dispatch, ref, roomSelected, data.length]);
   useEffect(() => {
-    setData(findRoomById(rooms, roomId)?.messages || []);
-  }, [roomId, rooms]);
+    setData(findRoomById(rooms, roomSelected?.id)?.messages || []);
+  }, [roomSelected?.id, rooms]);
   useEffect(() => {
-    if (ref?.current) {
+    if (ref?.current && data.length < 11) {
       ref.current.scrollTop = ref.current.scrollHeight;
     }
   }, [data]);
@@ -31,7 +38,7 @@ const DisplayList = ({ roomId }) => {
         scrollableDiv.removeEventListener("scroll", handleScroll);
       };
     }
-  }, []);
+  }, [handleScroll]);
   return (
     <div
       id="scrollableDiv"

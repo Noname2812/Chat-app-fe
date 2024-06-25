@@ -2,6 +2,7 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { store } from "../redux/store";
 import { logout, setNewToken } from "../redux/reducers/authReducers";
+import dayjs from "dayjs";
 const axiosClient = axios.create({
   baseURL: "http://localhost:5264/api",
   headers: {
@@ -17,8 +18,8 @@ axiosClient.interceptors.request.use(
     const { user } = store.getState().auth;
     if (user) {
       const decodedToken = jwtDecode(user.token);
-      const currentTime = Date.now() / 1000;
-      if (decodedToken.exp < currentTime) {
+      const currentTime = dayjs();
+      if (dayjs.unix(decodedToken.exp) < currentTime) {
         // get new token
         try {
           const data = await refreshToken({

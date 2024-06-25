@@ -1,7 +1,6 @@
 import { toast } from "react-toastify";
 import { getFriendsOnline } from "../redux/reducers/authReducers";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
-
 import { store } from "../redux/store";
 import { fetchRoomId } from "../redux/asyncThunk/roomThunk";
 const conn = new HubConnectionBuilder()

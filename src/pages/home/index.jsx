@@ -9,22 +9,28 @@ import { chatApi } from "../../api/chatApi";
 import { fetchRoomId } from "../../redux/asyncThunk/roomThunk";
 import { toast } from "react-toastify";
 import { HubConnection } from "../../lib/HubConnection";
-import { useState } from "react";
+import { getRoomsState } from "../../redux/reducers/roomReducer";
 
 const HomeComponent = () => {
   const authState = useAppSelector(getAuthState);
-  const [roomIdSelectd, setRoomIdSelected] = useState();
+  const { roomSelected } = useAppSelector(getRoomsState);
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
   const sendMessage = async (value) => {
     try {
-      const res = await chatApi.chat({ ...value, roomId: roomIdSelectd });
-      dispatch(fetchRoomId({ roomId: res.data.data.roomId }));
+      const res = await chatApi.chat({
+        ...value,
+        roomId: roomSelected?.id,
+        isPrivate: roomSelected?.isPrivate,
+        to: roomSelected?.to,
+        name: roomSelected?.name,
+      });
+      dispatch(fetchRoomId({ roomId: res.data?.data?.roomId }));
       HubConnection.chat({
-        roomId: roomIdSelectd,
+        roomId: res.data?.data?.roomId,
         message: value.message,
         from: authState?.user?.id,
-        isPrivate: true,
+        isPrivate: roomSelected?.isPrivate,
       });
       form.setFieldsValue({ message: "", images: [] });
     } catch (error) {
@@ -32,20 +38,17 @@ const HomeComponent = () => {
     }
   };
   return (
-    <main className="pt-2 px-32 max-w-screen overflow-x-hidden">
+    <main className="pt-2  px-32 max-w-screen overflow-x-hidden">
       <div>
         <h2 className="text-2xl text-center font-bold py-4">
           Chào mừng đến chat app
         </h2>
       </div>
       <div className="flex gap-2 w-full h-15/16">
-        <MenuRoomChats
-          onClick={(value) => setRoomIdSelected(value)}
-          roomIdSelectd={roomIdSelectd}
-        />
+        <MenuRoomChats />
         <div className="w-1/2 ">
-          <DisplayList roomId={roomIdSelectd} />
-          <div className={`py-4 ${roomIdSelectd ? "" : "hidden"}`}>
+          <DisplayList />
+          <div className={`py-4 ${roomSelected ? "" : "hidden"}`}>
             <Form
               onFinish={sendMessage}
               form={form}

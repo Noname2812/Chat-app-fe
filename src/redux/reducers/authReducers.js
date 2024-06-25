@@ -15,8 +15,9 @@ const authSlices = createSlice({
       state.user = action.payload;
     },
     setNewToken: (state, action) => {
-      const { accessToken, refreshToken } = action.payload;
-      state.user = { ...state.user, accessToken, refreshToken };
+      const { token, refreshToken } = action.payload;
+
+      state.user = { ...state.user, token, refreshToken };
     },
     logout: (state) => {
       state.user = undefined;
