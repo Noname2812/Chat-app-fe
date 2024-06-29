@@ -19,7 +19,7 @@ const MenuRoomChats = () => {
     dispatch(fetchRooms());
   }, [dispatch]);
   return (
-    <div className="w-1/4">
+    <div className="w-full">
       {rooms?.map((room) => (
         <Card
           key={room.id}
@@ -30,7 +30,7 @@ const MenuRoomChats = () => {
         >
           <div>
             <p className="text-xl font-bold">
-              {reNameRoom(room.name, user?.name)}
+              {reNameRoom(room.name, user?.name) || room.name}
             </p>
             <p className=" whitespace-nowrap overflow-hidden text-ellipsis">{`${
               room.messages?.[0]?.userId === user.id

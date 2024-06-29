@@ -11,7 +11,11 @@ export const fetchRooms = createAsyncThunk(
 export const fetchRoomId = createAsyncThunk(
   "room/fetchRoomId",
   async ({ roomId, offset, limit }, { dispatch }) => {
-    const result = await roomApi.getRoomById({ id: roomId, offset, limit });
-    return result.data?.data?.room;
+    try {
+      const result = await roomApi.getRoomById({ id: roomId, offset, limit });
+      return result.data?.data?.room;
+    } catch (error) {
+      throw error?.respone;
+    }
   }
 );

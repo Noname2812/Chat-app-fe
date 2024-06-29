@@ -44,9 +44,11 @@ const HomeComponent = () => {
           Chào mừng đến chat app
         </h2>
       </div>
-      <div className="flex gap-2 w-full h-15/16">
-        <MenuRoomChats />
-        <div className="w-1/2 ">
+      <Row gutter={[16, 0]}>
+        <Col span={6}>
+          <MenuRoomChats />
+        </Col>
+        <Col span={12}>
           <DisplayList />
           <div className={`py-4 ${roomSelected ? "" : "hidden"}`}>
             <Form
@@ -54,28 +56,36 @@ const HomeComponent = () => {
               form={form}
               initialValues={{ message: "", images: [] }}
             >
-              <Row justify={"space-between"}>
-                <Col span={16}>
+              <Row justify={"end"} gutter={[16, 0]} className="w-full">
+                <Col xl={16} sm={24}>
                   <Form.Item name="message">
                     <Input.TextArea rows={4} />
                   </Form.Item>
                 </Col>
-                <Col span={3}>
+                <Col xl={4} sm={12}>
                   <MUploadImageMultiple
                     initFileList={form.getFieldValue("images")}
                   />
                 </Col>
-                <Col span={3}>
-                  <Button htmlType="submit" type="primary" className="w-full ">
-                    Chat
-                  </Button>
+                <Col xl={4} sm={12}>
+                  <div className="flex justify-end">
+                    <Button
+                      htmlType="submit"
+                      type="primary"
+                      className="w-[100px]  xl:w-full "
+                    >
+                      Chat
+                    </Button>
+                  </div>
                 </Col>
               </Row>
             </Form>
           </div>
-        </div>
-        <ListUserOnline data={authState.friendsOnline} />
-      </div>
+        </Col>
+        <Col span={6}>
+          <ListUserOnline data={authState.friendsOnline} />
+        </Col>
+      </Row>
     </main>
   );
 };

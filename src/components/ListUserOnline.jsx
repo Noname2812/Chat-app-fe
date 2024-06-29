@@ -1,3 +1,4 @@
+import { logDOM } from "@testing-library/react";
 import { roomApi } from "../api/roomApi";
 import { getAuthState } from "../redux/reducers/authReducers";
 import {
@@ -14,28 +15,30 @@ const ListUserOnline = ({ data }) => {
   const dispatch = useAppDispatch();
   const handleChoice = async ({ id, name }) => {
     try {
+      const newRoom = {
+        id: Number(user.id + id) * -1,
+        name: "Chat với " + name,
+        message: [],
+        isPrivate: true,
+        to: id,
+      };
       const res = await roomApi.getPrivateRoomWithUserId(id);
-      if (!res.data?.data) {
-        // create new room local
-        const newRoom = {
-          id: Number(user.id + id) * -1,
-          name: "Chat với " + name,
-          message: [],
-          isPrivate: true,
-          to: id,
-        };
-        if (!findRoomById(rooms, Number(user.id + id) * -1)) {
+
+      if (res.data?.data) {
+        if (!findRoomById(rooms, Number(res.data?.data?.id))) {
           dispatch(createNewRoom(newRoom));
+        } else {
+          dispatch(setRoomSelected(res.data?.data));
         }
       } else {
-        dispatch(setRoomSelected(res.data?.data));
+        dispatch(createNewRoom(newRoom));
       }
     } catch (error) {
       console.log(error);
     }
   };
   return (
-    <div className="w-1/4 ">
+    <div className="w-full ">
       <h2>Danh sách online</h2>
       <div className="flex flex-col gap-2">
         {data?.map((friend) => (

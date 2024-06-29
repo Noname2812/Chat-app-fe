@@ -26,8 +26,7 @@ export const findRoomById = (rooms, roomId) => {
   return room;
 };
 export function reNameRoom(fullName, prefix) {
-  const arr = fullName.split("-");
-  console.log(arr);
+  const arr = fullName?.split("-");
   if (arr[0]?.trim() === prefix?.trim()) {
     return "Chat with " + arr[1];
   }

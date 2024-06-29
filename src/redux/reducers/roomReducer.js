@@ -35,7 +35,8 @@ const roomSlices = createSlice({
     });
     builder.addCase(fetchRooms.rejected, (state, action) => {
       state.isLoadingRoom = false;
-      toast.error("call api failed !");
+      console.log(action);
+      toast.error(action.error?.message || "call api failed !");
     });
     builder.addCase(fetchRoomId.pending, (state, action) => {
       state.isLoadingRoomSelected = true;
@@ -43,7 +44,7 @@ const roomSlices = createSlice({
     builder.addCase(fetchRoomId.fulfilled, (state, action) => {
       state.isLoadingRoomSelected = false;
       const temp = cloneDeep(state.rooms);
-      if (temp.findIndex((x) => x.id === action.payload.id) < 0) {
+      if (temp.findIndex((x) => x?.id === action.payload?.id) < 0) {
         const rooms = temp.filter((x) => x.id > 0);
         state.rooms = [action.payload, ...rooms];
       } else {
