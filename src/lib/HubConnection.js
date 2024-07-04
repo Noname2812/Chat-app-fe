@@ -1,8 +1,7 @@
-import { toast } from "react-toastify";
-import { getFriendsOnline } from "../redux/reducers/authReducers";
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { store } from "../redux/store";
 import { fetchRoomId } from "../redux/asyncThunk/roomThunk";
+import { getFriendsOnline } from "../redux/reducers/authReducers";
 const conn = new HubConnectionBuilder()
   .withUrl("http://localhost:5264/hub")
   .configureLogging(LogLevel.Information)
@@ -16,23 +15,27 @@ conn.onclose(() => {
   conn.connectionState = "disconnected";
 });
 const connect = async (user) => {
-  if (user && conn.connectionState === "disconnected") {
-    await conn.start();
-    conn.connectionState = "connected";
-    conn.invoke("AddUserConnection", {
-      userId: user?.id,
-      name: user?.name,
-    });
-    conn.on("NotifyUserOnline", (name) => toast(`${name} was online !`));
-    conn.on("GetListUserOnline", (users) => {
-      store.dispatch(getFriendsOnline(users));
-    });
-    conn.on("ReceiveMessagePrivate", (id) => {
-      store.dispatch(fetchRoomId({ roomId: id }));
-    });
-    conn.on("ReceiveMessageFromGroup", (id) => {
-      store.dispatch(fetchRoomId({ roomId: id }));
-    });
+  try {
+    if (user && conn.connectionState === "disconnected") {
+      await conn.start();
+      conn.connectionState = "connected";
+      conn.invoke("AddUserConnection", {
+        userId: user?.id,
+        name: user?.name,
+        avatar: user?.avatar,
+      });
+      conn.on("ListFriendsOnline", (friends) => {
+        store.dispatch(getFriendsOnline(friends));
+      });
+      conn.on("ReceiveMessagePrivate", (id) => {
+        store.dispatch(fetchRoomId({ roomId: id }));
+      });
+      conn.on("ReceiveMessageFromGroup", (id) => {
+        store.dispatch(fetchRoomId({ roomId: id }));
+      });
+    }
+  } catch (error) {
+    console.log(error);
   }
 };
 const sendMessage = async ({ from, roomId, message, isPrivate }) => {
@@ -50,7 +53,7 @@ export const HubConnection = {
     sendMessage({ from, roomId, message, isPrivate }),
   disconnect: () => {
     if ((conn.connectionState = "connected")) {
-      conn.stop();
+      conn.stop().catch((err) => console.log(err));
       conn.connectionState = "disconnected";
     }
   },

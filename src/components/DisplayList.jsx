@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Image, List } from "antd";
+import { Button, Image, List } from "antd";
 import { useAppDispatch, useAppSelector } from "../redux/store";
 import { getAuthState } from "../redux/reducers/authReducers";
 import { getRoomsState } from "../redux/reducers/roomReducer";
@@ -9,27 +9,33 @@ const DisplayList = () => {
   const { user } = useAppSelector(getAuthState);
   const { roomSelected, rooms } = useAppSelector(getRoomsState);
   const [data, setData] = useState([]);
+  const [showButton, setShowButton] = useState(false);
   const ref = useRef(null);
   const dispatch = useAppDispatch();
+  const handleLoadMore = () => {
+    dispatch(
+      fetchRoomId({
+        roomId: roomSelected?.id,
+        offset: data.length,
+        limit: 10,
+      })
+    );
+  };
   const handleScroll = useCallback(() => {
     if (ref.current.scrollTop === 0) {
-      dispatch(
-        fetchRoomId({
-          roomId: roomSelected?.id,
-          offset: data.length,
-          limit: 10,
-        })
-      );
+      setShowButton(true);
+    } else {
+      setShowButton(false);
     }
-  }, [dispatch, ref, roomSelected, data.length]);
+  }, []);
   useEffect(() => {
     setData(findRoomById(rooms, roomSelected?.id)?.messages || []);
   }, [roomSelected?.id, rooms]);
   useEffect(() => {
-    if (ref?.current && data.length < 11) {
+    if (ref?.current) {
       ref.current.scrollTop = ref.current.scrollHeight;
     }
-  }, [data]);
+  }, [roomSelected?.id]);
   useEffect(() => {
     const scrollableDiv = ref.current;
     if (scrollableDiv) {
@@ -43,7 +49,7 @@ const DisplayList = () => {
     <div
       id="scrollableDiv"
       style={{
-        height: 600,
+        height: 500,
         overflow: "auto",
         padding: "0 16px",
         border: "1px solid rgba(140, 140, 140, 0.35)",
@@ -51,6 +57,11 @@ const DisplayList = () => {
       className="w-full"
       ref={ref}
     >
+      {showButton && (
+        <div style={{ textAlign: "center", margin: "10px 0" }}>
+          <Button onClick={handleLoadMore}>Xem thêm tin nhắn cũ</Button>
+        </div>
+      )}
       {data.length > 0 && (
         <List
           dataSource={[...data].reverse() || []}

@@ -4,19 +4,23 @@ import { updateProfile } from "../asyncThunk/userThunk";
 import { toast } from "react-toastify";
 const initialState = {
   user: undefined,
-  friendsOnline: [],
   isChanging: false,
+  listFriends: [],
 };
 const authSlices = createSlice({
   name: "authReducers",
   initialState,
   reducers: {
     loginSuccess: (state, action) => {
-      state.user = action.payload;
+      state.user = {
+        ...action.payload?.data?.user,
+        token: action.payload?.data?.token,
+        refreshToken: action.payload?.data?.refreshToken,
+      };
+      state.listFriends = action.payload?.data?.friends;
     },
     setNewToken: (state, action) => {
       const { token, refreshToken } = action.payload;
-
       state.user = { ...state.user, token, refreshToken };
     },
     logout: (state) => {
@@ -24,9 +28,7 @@ const authSlices = createSlice({
       HubConnection.disconnect();
     },
     getFriendsOnline: (state, action) => {
-      state.friendsOnline = action.payload.filter(
-        (user) => user.userId !== state.user.id
-      );
+      state.listFriends = action.payload;
     },
   },
   extraReducers: (builder) => {

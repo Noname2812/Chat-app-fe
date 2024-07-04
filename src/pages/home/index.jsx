@@ -83,7 +83,7 @@ const HomeComponent = () => {
           </div>
         </Col>
         <Col span={6}>
-          <ListUserOnline data={authState.friendsOnline} />
+          <ListUserOnline />
         </Col>
       </Row>
     </main>

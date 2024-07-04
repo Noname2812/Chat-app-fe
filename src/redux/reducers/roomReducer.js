@@ -35,7 +35,6 @@ const roomSlices = createSlice({
     });
     builder.addCase(fetchRooms.rejected, (state, action) => {
       state.isLoadingRoom = false;
-      console.log(action);
       toast.error(action.error?.message || "call api failed !");
     });
     builder.addCase(fetchRoomId.pending, (state, action) => {

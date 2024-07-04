@@ -5,12 +5,13 @@ import LoginPage from "./pages/login";
 import { RequireAuth } from "./components/RequiredAuth";
 import { useAppSelector } from "./redux/store";
 import { getAuthState } from "./redux/reducers/authReducers";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { HubConnection } from "./lib/HubConnection";
 import Header from "./components/layout/Header";
 
 import { routePrivate } from "./constants";
 import Register from "./pages/register";
+import Loading from "./components/Loading";
 function App() {
   const { user } = useAppSelector(getAuthState);
   useEffect(() => {
@@ -25,13 +26,19 @@ function App() {
       <Routes>
         <Route path="/login" element={<LoginPage user={user} />} default />
         <Route path="/register" element={<Register user={user} />} />
+
         {routePrivate.map((route) => (
           <Route
             path={route.path}
-            element={<RequireAuth>{route.component}</RequireAuth>}
+            element={
+              <Suspense fallback={<Loading />}>
+                <RequireAuth>{route.component}</RequireAuth>
+              </Suspense>
+            }
             key={route.path}
           />
         ))}
+
         <Route path="/courses/:courseId" element={<div>detail</div>} />
         <Route path="*" element={<div>Not found</div>} />
       </Routes>
