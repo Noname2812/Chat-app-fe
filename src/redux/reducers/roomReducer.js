@@ -22,7 +22,7 @@ const roomSlices = createSlice({
       state.roomSelected = action.payload;
     },
     addNewRoom: (state, action) => {
-      const temp = cloneDeep(state.rooms);
+      // const temp = cloneDeep(state.rooms);
     },
   },
   extraReducers: (builder) => {
@@ -31,7 +31,8 @@ const roomSlices = createSlice({
     });
     builder.addCase(fetchRooms.fulfilled, (state, action) => {
       state.isLoadingRoom = false;
-      state.rooms = action.payload.data.rooms;
+      console.log(action.payload);
+      state.rooms = action.payload.data?.rooms || [];
     });
     builder.addCase(fetchRooms.rejected, (state, action) => {
       state.isLoadingRoom = false;

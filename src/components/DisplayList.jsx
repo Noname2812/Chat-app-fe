@@ -64,7 +64,11 @@ const DisplayList = () => {
       )}
       {data.length > 0 && (
         <List
-          dataSource={[...data].reverse() || []}
+          dataSource={
+            [
+              ...(findRoomById(rooms, roomSelected?.id)?.messages || []),
+            ].reverse() || []
+          }
           renderItem={(item) => (
             <div key={item.id}>
               {item.imageUrl && (

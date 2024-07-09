@@ -18,28 +18,30 @@ const MenuRoomChats = () => {
   useEffect(() => {
     dispatch(fetchRooms());
   }, [dispatch]);
+  console.log(rooms);
   return (
     <div className="w-full">
-      {rooms?.map((room) => (
-        <Card
-          key={room.id}
-          className={` hover:opacity-90 cursor-pointer ${
-            roomSelected?.id === room?.id ? "bg-green-200" : "bg-green-400"
-          }`}
-          onClick={() => handleChoiceRoom(room)}
-        >
-          <div>
-            <p className="text-xl font-bold">
-              {reNameRoom(room.name, user?.name) || room.name}
-            </p>
-            <p className=" whitespace-nowrap overflow-hidden text-ellipsis">{`${
-              room.messages?.[0]?.userId === user.id
-                ? `Bạn: ${room.messages?.[0]?.content || "[Hình ảnh]"}`
-                : room.messages?.[0]?.content || ""
-            }`}</p>
-          </div>
-        </Card>
-      ))}
+      {rooms?.length > 0 &&
+        rooms?.map((room) => (
+          <Card
+            key={room.id + room.name}
+            className={` hover:opacity-90 cursor-pointer ${
+              roomSelected?.id === room?.id ? "bg-green-200" : "bg-green-400"
+            }`}
+            onClick={() => handleChoiceRoom(room)}
+          >
+            <div>
+              <p className="text-xl font-bold">
+                {reNameRoom(room.name, user?.name) || room.name}
+              </p>
+              <p className=" whitespace-nowrap overflow-hidden text-ellipsis">{`${
+                room.messages?.[0]?.userId === user.id
+                  ? `Bạn: ${room.messages?.[0]?.content || "[Hình ảnh]"}`
+                  : room.messages?.[0]?.content || ""
+              }`}</p>
+            </div>
+          </Card>
+        ))}
     </div>
   );
 };

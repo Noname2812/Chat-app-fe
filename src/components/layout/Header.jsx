@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
 import { getAuthState, logout } from "../../redux/reducers/authReducers";
-import { Avatar, Button, Dropdown, Image } from "antd";
+import { Avatar, Button, Col, Dropdown, Image, Row } from "antd";
 import { authApi } from "../../api/authApi";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { useLocation, useNavigate } from "react-router-dom";
+import SearchInput from "../SearchInput";
+import ListAddFriendRequests from "../ListAddFriendRequests";
 
 const Header = () => {
   const { user } = useAppSelector(getAuthState);
@@ -50,45 +52,64 @@ const Header = () => {
       key: "123213sseeww3",
     },
   ];
-
   return (
     <header>
       {user && (
-        <div className="flex justify-between px-4 py-2 bg-black  items-center ">
-          <div className="cursor-pointer" onClick={() => handleClickGoHome()}>
-            <FontAwesomeIcon icon={faHome} color="white" size="2x" />
-          </div>
-          <Dropdown
-            menu={{
-              items,
-            }}
-            trigger={["click"]}
+        <Row
+          className="bg-black py-2 px-4"
+          align={"middle"}
+          justify={"space-between"}
+        >
+          <Col
+            span={2}
+            className="cursor-pointer"
+            onClick={() => handleClickGoHome()}
           >
-            <div
-              className="flex gap-4 items-center cursor-pointer"
-              key={"qeqqqq"}
-            >
-              <Avatar
-                size={64}
-                className="bg-green-500"
-                icon={
-                  user?.avatar ? (
-                    <Image
-                      src={user?.avatar}
-                      preview={false}
-                      className="rounded-full"
-                      width={64}
-                      height={64}
+            <FontAwesomeIcon icon={faHome} color="white" size="2x" />
+          </Col>
+          <Col span={8}>
+            <SearchInput />
+          </Col>
+          <Col>
+            <Row gutter={[16, 0]} align={"middle"}>
+              <Col>
+                <ListAddFriendRequests />
+              </Col>
+              <Col>
+                <Dropdown
+                  menu={{
+                    items,
+                  }}
+                  trigger={["click"]}
+                >
+                  <div
+                    className="flex gap-4 items-center cursor-pointer"
+                    key={"qeqqqq"}
+                  >
+                    <Avatar
+                      size={64}
+                      className="bg-green-500"
+                      icon={
+                        user?.avatar ? (
+                          <Image
+                            src={user?.avatar}
+                            preview={false}
+                            className="rounded-full"
+                            width={64}
+                            height={64}
+                          />
+                        ) : (
+                          <FontAwesomeIcon icon={faUser} />
+                        )
+                      }
                     />
-                  ) : (
-                    <FontAwesomeIcon icon={faUser} />
-                  )
-                }
-              />
-              <p className="text-xl text-white">{`${user?.name}`}</p>
-            </div>
-          </Dropdown>
-        </div>
+                    <p className="text-xl text-white">{`${user?.name}`}</p>
+                  </div>
+                </Dropdown>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
       )}
       {!user && (
         <div className="flex justify-center py-4 bg-black overflow-x-hidden">

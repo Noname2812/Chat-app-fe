@@ -8,3 +8,21 @@ export const updateProfile = createAsyncThunk(
     return result.data;
   }
 );
+export const getListAddFriendRequests = createAsyncThunk(
+  "room/fetchRoomId",
+  async ({ offset, limit }, { dispatch }) => {
+    const result = await userApi.getListAddFriendRequests({ offset, limit });
+    return result.data;
+  }
+);
+export const acceptAddFriendRequest = createAsyncThunk(
+  "room/acceptRequestAddFriend",
+  async ({ userId, friendId }, { dispatch }) => {
+    try {
+      const result = await userApi.acceptAddFriendRequest({ userId, friendId });
+      return result.data;
+    } catch (error) {
+      throw error.respone;
+    }
+  }
+);

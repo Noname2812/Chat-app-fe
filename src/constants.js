@@ -1,5 +1,6 @@
 import HomeComponent from "./pages/home";
 import Profile from "./pages/profile";
+import SearchPageComponent from "./pages/search/Index";
 
 export const routePrivate = [
   {
@@ -9,5 +10,9 @@ export const routePrivate = [
   {
     path: "/profile",
     component: <Profile />,
+  },
+  {
+    path: "/search/:search",
+    component: <SearchPageComponent />,
   },
 ];
