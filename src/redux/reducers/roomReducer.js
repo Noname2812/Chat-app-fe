@@ -1,7 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { fetchRoomId, fetchRooms } from "../asyncThunk/roomThunk";
 import { toast } from "react-toastify";
-import { replaceMessagesToRoom } from "../../utils/functionHelper";
+import {
+  findRoomById,
+  replaceMessagesToRoom,
+} from "../../utils/functionHelper";
 import { cloneDeep } from "lodash";
 
 const initialState = {
@@ -18,8 +21,11 @@ const roomSlices = createSlice({
       state.roomSelected = action.payload;
     },
     createNewRoom: (state, action) => {
-      state.rooms.push(action.payload);
-      state.roomSelected = action.payload;
+      const checkExistsRoom = findRoomById(state.rooms, action.payload?.id);
+      if (!checkExistsRoom) {
+        state.rooms.push(action.payload);
+        state.roomSelected = action.payload;
+      }
     },
     addNewRoom: (state, action) => {
       // const temp = cloneDeep(state.rooms);
