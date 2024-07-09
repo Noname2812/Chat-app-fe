@@ -16,7 +16,7 @@ const ListAddFriendRequests = () => {
   const [items, setItems] = useState([]);
   const dispatch = useAppDispatch();
   const handleAccept = (id) => {
-    dispatch(acceptAddFriendRequest({ userId: user.id, friendId: id }));
+    dispatch(acceptAddFriendRequest({ userId: id, friendId: user.id }));
   };
   const handleReject = (id) => {
     console.log(user.id, id);

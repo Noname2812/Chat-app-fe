@@ -48,7 +48,7 @@ const roomSlices = createSlice({
     });
     builder.addCase(fetchRoomId.fulfilled, (state, action) => {
       state.isLoadingRoomSelected = false;
-      console.log(action.payload);
+
       const temp = cloneDeep(state.rooms);
       if (temp.findIndex((x) => x?.id === action.payload?.id) < 0) {
         const rooms = temp.filter((x) => x.id > 0);
@@ -64,7 +64,6 @@ const roomSlices = createSlice({
         }
       }
       if (state.roomSelected?.id < 0) {
-        console.log(action.payload);
         state.roomSelected = action.payload;
       }
     });

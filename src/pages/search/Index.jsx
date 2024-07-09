@@ -12,7 +12,6 @@ const SearchPageComponent = () => {
   const { user } = useAppSelector(getAuthState);
   const { updating } = useAppSelector(getFriendState);
   const { search } = useParams();
-
   const dispatch = useAppDispatch();
   const [data, setData] = useState([]);
   const handleAddFriend = async (id) => {
@@ -33,7 +32,6 @@ const SearchPageComponent = () => {
       console.log(error);
     }
   };
-  console.log(data);
   useEffect(() => {
     if (updating !== "Pending") {
       searchApi

@@ -22,7 +22,6 @@ const friendSlices = createSlice({
     });
     builder.addCase(acceptAddFriendRequest.fulfilled, (state, action) => {
       state.updating = "completed";
-      toast.success(action.payload.data?.message);
     });
     builder.addCase(acceptAddFriendRequest.rejected, (state, action) => {
       state.updating = "error";

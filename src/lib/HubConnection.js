@@ -2,6 +2,8 @@ import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { store } from "../redux/store";
 import { fetchRoomId } from "../redux/asyncThunk/roomThunk";
 import { getFriendsOnline } from "../redux/reducers/authReducers";
+import { getListAddFriendRequests } from "../redux/asyncThunk/userThunk";
+import { toast } from "react-toastify";
 const conn = new HubConnectionBuilder()
   .withUrl("http://localhost:5264/hub")
   .configureLogging(LogLevel.Information)
@@ -33,15 +35,14 @@ const connect = async (user) => {
       conn.on("ReceiveMessageFromGroup", (id) => {
         store.dispatch(fetchRoomId({ roomId: id }));
       });
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
-const sendMessage = async ({ from, roomId, message, isPrivate }) => {
-  try {
-    if (conn.connectionState === "connected") {
-      await conn.invoke("SendMessage", { from, roomId, message, isPrivate });
+      conn.on("NotifyRevicedAddFriendRequest", (user) => {
+        toast.success(user.name + " vừa gửi lời mới kết bạn !");
+        store.dispatch(getListAddFriendRequests({ offset: 0, limit: 10 }));
+      });
+      conn.on("NotifyAcceptedAddFriendRequest", (user) => {
+        toast.success(user.name + " đã chấp nhận lời mời kết bạn");
+        store.dispatch(getListAddFriendRequests({ offset: 0, limit: 10 }));
+      });
     }
   } catch (error) {
     console.log(error);
@@ -49,8 +50,6 @@ const sendMessage = async ({ from, roomId, message, isPrivate }) => {
 };
 export const HubConnection = {
   connection: async (user) => await connect(user),
-  chat: ({ from, roomId, message, isPrivate }) =>
-    sendMessage({ from, roomId, message, isPrivate }),
   disconnect: () => {
     if ((conn.connectionState = "connected")) {
       conn.stop().catch((err) => console.log(err));
