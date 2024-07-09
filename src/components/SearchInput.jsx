@@ -26,7 +26,7 @@ const SearchInput = () => {
               type="text"
               className="text-sm w-full pr-8"
               variant={false}
-              placeholder={"Search...."}
+              placeholder={"Find some body..."}
             />
           </Form.Item>
           <FontAwesomeIcon

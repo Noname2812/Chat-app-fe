@@ -18,7 +18,6 @@ const MenuRoomChats = () => {
   useEffect(() => {
     dispatch(fetchRooms());
   }, [dispatch]);
-  console.log(rooms);
   return (
     <div className="w-full">
       {rooms?.length > 0 &&

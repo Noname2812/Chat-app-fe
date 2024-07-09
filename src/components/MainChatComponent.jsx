@@ -5,7 +5,7 @@ import { getAuthState } from "../redux/reducers/authReducers";
 import { getRoomsState } from "../redux/reducers/roomReducer";
 import { fetchRoomId } from "../redux/asyncThunk/roomThunk";
 import { findRoomById } from "../utils/functionHelper";
-const DisplayList = () => {
+const MainChatComponent = () => {
   const { user } = useAppSelector(getAuthState);
   const { roomSelected, rooms } = useAppSelector(getRoomsState);
   const [data, setData] = useState([]);
@@ -112,4 +112,4 @@ const DisplayList = () => {
     </div>
   );
 };
-export default DisplayList;
+export default MainChatComponent;

@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from "../redux/store";
 import { findRoomById, formatTime } from "../utils/functionHelper";
 import { Avatar } from "antd";
 
-const ListUserOnline = ({ data }) => {
+const ListFriendsComponent = () => {
   const { user, listFriends } = useAppSelector(getAuthState);
   const { rooms } = useAppSelector(getRoomsState);
   const dispatch = useAppDispatch();
@@ -39,11 +39,11 @@ const ListUserOnline = ({ data }) => {
   };
   return (
     <div className="w-full ">
-      <h2>Danh sách online</h2>
+      <h2 className="text-xl font-bold underline">Danh sách bạn bè</h2>
       <div className="flex flex-col gap-2">
         {listFriends?.map((friend) => (
           <div
-            className={`p-2 font-bold rounded relative flex gap-2 ${
+            className={`p-2 font-bold rounded relative flex gap-2 cursor-pointer hover:opacity-80 ${
               friend?.isOnline ? "bg-green-400" : "bg-blue-100"
             }`}
             key={friend.id}
@@ -64,5 +64,4 @@ const ListUserOnline = ({ data }) => {
     </div>
   );
 };
-
-export default ListUserOnline;
+export default ListFriendsComponent;

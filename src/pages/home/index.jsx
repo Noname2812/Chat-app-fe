@@ -1,15 +1,15 @@
-import MenuRoomChats from "../../components/MenuRoomChats";
-import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { getAuthState } from "../../redux/reducers/authReducers";
 import { Button, Col, Form, Input, Row } from "antd";
-import ListUserOnline from "../../components/ListUserOnline";
-import DisplayList from "../../components/DisplayList";
-import MUploadImageMultiple from "../../components/MUploadImageMultiple";
-import { chatApi } from "../../api/chatApi";
-import { fetchRoomId } from "../../redux/asyncThunk/roomThunk";
-import { toast } from "react-toastify";
-import { HubConnection } from "../../lib/HubConnection";
+import { getAuthState } from "../../redux/reducers/authReducers";
 import { getRoomsState } from "../../redux/reducers/roomReducer";
+import { useAppDispatch, useAppSelector } from "../../redux/store";
+import { fetchRoomId } from "../../redux/asyncThunk/roomThunk";
+import { HubConnection } from "../../lib/HubConnection";
+import { toast } from "react-toastify";
+import ListFriendsComponent from "../../components/ListFriendsComponent";
+import MUploadImageMultiple from "../../components/MUploadImageMultiple";
+import MainChatComponent from "../../components/MainChatComponent";
+import { chatApi } from "../../api/chatApi";
+import MenuRoomChats from "../../components/MenuRoomChats";
 
 const HomeComponent = () => {
   const authState = useAppSelector(getAuthState);
@@ -49,7 +49,7 @@ const HomeComponent = () => {
           <MenuRoomChats />
         </Col>
         <Col span={12}>
-          <DisplayList />
+          <MainChatComponent />
           <div className={`py-4 ${roomSelected ? "" : "hidden"}`}>
             <Form
               onFinish={sendMessage}
@@ -83,7 +83,7 @@ const HomeComponent = () => {
           </div>
         </Col>
         <Col span={6}>
-          <ListUserOnline />
+          <ListFriendsComponent />
         </Col>
       </Row>
     </main>
