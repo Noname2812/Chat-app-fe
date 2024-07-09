@@ -24,7 +24,7 @@ const SearchPageComponent = () => {
       setData((data) =>
         data.map((item) => {
           if (item.id === id) {
-            return { ...item, friendShip: res.data?.data?.friendShip };
+            return { ...item, friendShip: res.data.data?.friendShip };
           }
           return item;
         })
@@ -33,12 +33,12 @@ const SearchPageComponent = () => {
       console.log(error);
     }
   };
+  console.log(data);
   useEffect(() => {
     if (updating !== "Pending") {
       searchApi
         .search({ searchValue: search, offset: 0, limit: 10 })
         .then((res) => {
-          console.log(res.data?.data);
           setData(res.data?.data);
         })
         .catch((err) => console.log(err));
@@ -68,11 +68,11 @@ const SearchPageComponent = () => {
             </Col>
 
             <Col>
-              {item.friendship?.status === "Accepted" && (
+              {item.friendShip?.status === "Accepted" && (
                 <Button className="bg-green-500 text-white ">Bạn bè</Button>
               )}
-              {item.friendship?.status === "Pending" &&
-                item.friendship?.friendId === user?.id && (
+              {item.friendShip?.status === "Pending" &&
+                item.friendShip?.friendId === user?.id && (
                   <Row gutter={[8, 0]}>
                     <Col>
                       <Button
@@ -93,13 +93,13 @@ const SearchPageComponent = () => {
                     </Col>
                   </Row>
                 )}
-              {item.friendship?.status === "Pending" &&
-                item.friendship?.userId === user?.id && (
+              {item.friendShip?.status === "Pending" &&
+                item.friendShip?.userId === user?.id && (
                   <Button className="bg-green-500 text-white">
                     Đang chờ xác nhận
                   </Button>
                 )}
-              {!item.friendship && (
+              {!item.friendShip && (
                 <Button
                   className="bg-blue-500 text-white"
                   onClick={() => handleAddFriend(item.id)}

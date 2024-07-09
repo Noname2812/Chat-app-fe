@@ -23,7 +23,6 @@ const ListFriendsComponent = () => {
         to: id,
       };
       const res = await roomApi.getPrivateRoomWithUserId(id);
-
       if (res.data?.data) {
         if (!findRoomById(rooms, Number(res.data?.data?.id))) {
           dispatch(createNewRoom(newRoom));

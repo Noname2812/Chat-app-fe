@@ -1,41 +1,28 @@
 import { Button, Col, Form, Input, Row } from "antd";
-import { getAuthState } from "../../redux/reducers/authReducers";
 import { getRoomsState } from "../../redux/reducers/roomReducer";
 import { useAppDispatch, useAppSelector } from "../../redux/store";
-import { fetchRoomId } from "../../redux/asyncThunk/roomThunk";
-import { HubConnection } from "../../lib/HubConnection";
-import { toast } from "react-toastify";
 import ListFriendsComponent from "../../components/ListFriendsComponent";
 import MUploadImageMultiple from "../../components/MUploadImageMultiple";
 import MainChatComponent from "../../components/MainChatComponent";
-import { chatApi } from "../../api/chatApi";
 import MenuRoomChats from "../../components/MenuRoomChats";
+import { sendMessages } from "../../redux/asyncThunk/chatThunk";
 
 const HomeComponent = () => {
-  const authState = useAppSelector(getAuthState);
   const { roomSelected } = useAppSelector(getRoomsState);
+
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
-  const sendMessage = async (value) => {
-    try {
-      const res = await chatApi.chat({
+  const sendMessage = (value) => {
+    dispatch(
+      sendMessages({
         ...value,
         roomId: roomSelected?.id,
         isPrivate: roomSelected?.isPrivate,
         to: roomSelected?.to,
         name: roomSelected?.name,
-      });
-      dispatch(fetchRoomId({ roomId: res.data?.data?.roomId }));
-      HubConnection.chat({
-        roomId: res.data?.data?.roomId,
-        message: value.message,
-        from: authState?.user?.id,
-        isPrivate: roomSelected?.isPrivate,
-      });
-      form.setFieldsValue({ message: "", images: [] });
-    } catch (error) {
-      toast.error("Có lỗi xảy ra vui lòng thử lại sau !");
-    }
+      })
+    );
+    form.setFieldsValue({ message: "", images: [] });
   };
   return (
     <main className="pt-2  px-32 max-w-screen overflow-x-hidden">

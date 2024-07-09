@@ -4,23 +4,15 @@ import { useAppDispatch, useAppSelector } from "../redux/store";
 import { getAuthState } from "../redux/reducers/authReducers";
 import { getRoomsState } from "../redux/reducers/roomReducer";
 import { fetchRoomId } from "../redux/asyncThunk/roomThunk";
-import { findRoomById } from "../utils/functionHelper";
+import { getChatState } from "../redux/reducers/chatReducers";
 const MainChatComponent = () => {
   const { user } = useAppSelector(getAuthState);
-  const { roomSelected, rooms } = useAppSelector(getRoomsState);
-  const [data, setData] = useState([]);
+  const { roomSelected } = useAppSelector(getRoomsState);
+  const { chatting } = useAppSelector(getChatState);
   const [showButton, setShowButton] = useState(false);
   const ref = useRef(null);
   const dispatch = useAppDispatch();
-  const handleLoadMore = () => {
-    dispatch(
-      fetchRoomId({
-        roomId: roomSelected?.id,
-        offset: data.length,
-        limit: 10,
-      })
-    );
-  };
+
   const handleScroll = useCallback(() => {
     if (ref.current.scrollTop === 0) {
       setShowButton(true);
@@ -29,13 +21,14 @@ const MainChatComponent = () => {
     }
   }, []);
   useEffect(() => {
-    setData(findRoomById(rooms, roomSelected?.id)?.messages || []);
-  }, [roomSelected?.id, rooms]);
-  useEffect(() => {
-    if (ref?.current) {
-      ref.current.scrollTop = ref.current.scrollHeight;
+    if (chatting === "Completed" && roomSelected && roomSelected?.id > 0) {
+      if (ref?.current) {
+        ref.current.scrollTop = ref.current.scrollHeight;
+      }
+      dispatch(fetchRoomId({ roomId: roomSelected?.id }));
     }
-  }, [roomSelected?.id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, chatting]);
   useEffect(() => {
     const scrollableDiv = ref.current;
     if (scrollableDiv) {
@@ -44,7 +37,7 @@ const MainChatComponent = () => {
         scrollableDiv.removeEventListener("scroll", handleScroll);
       };
     }
-  }, [handleScroll]);
+  }, []);
   return (
     <div
       id="scrollableDiv"
@@ -59,16 +52,24 @@ const MainChatComponent = () => {
     >
       {showButton && (
         <div style={{ textAlign: "center", margin: "10px 0" }}>
-          <Button onClick={handleLoadMore}>Xem thêm tin nhắn cũ</Button>
+          <Button
+            onClick={() =>
+              dispatch(
+                fetchRoomId({
+                  roomId: roomSelected?.id,
+                  offset: roomSelected?.messages?.length,
+                  limit: 10,
+                })
+              )
+            }
+          >
+            Xem thêm tin nhắn cũ
+          </Button>
         </div>
       )}
-      {data.length > 0 && (
+      {roomSelected?.messages?.length > 0 && (
         <List
-          dataSource={
-            [
-              ...(findRoomById(rooms, roomSelected?.id)?.messages || []),
-            ].reverse() || []
-          }
+          dataSource={[...roomSelected?.messages].reverse() || []}
           renderItem={(item) => (
             <div key={item.id}>
               {item.imageUrl && (
