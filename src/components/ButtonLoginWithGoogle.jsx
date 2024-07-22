@@ -34,7 +34,7 @@ const ButtonLoginWithGoogle = ({ handleSubmitLogin }) => {
     <div className="flex gap-2 w-full">
       <Button
         icon={<FontAwesomeIcon icon={faGoogle} color="red" />}
-        onClick={() => handleLoginWithGoogle()}
+        onClick={handleLoginWithGoogle}
         className="w-full"
       >
         Login with Google

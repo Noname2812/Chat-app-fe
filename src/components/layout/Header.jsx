@@ -10,10 +10,12 @@ import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import SearchInput from "../SearchInput";
 import ListAddFriendRequests from "../ListAddFriendRequests";
+import useWindowSize from "../../hooks/useWindowSize";
 
 const Header = () => {
   const { user } = useAppSelector(getAuthState);
   const location = useLocation();
+  const sizeDevice = useWindowSize();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const handleLogut = async () => {
@@ -53,29 +55,34 @@ const Header = () => {
     },
   ];
   return (
-    <header>
+    <header className="bg-black flex justify-center">
       {user && (
         <Row
-          className="bg-black py-2 px-4"
+          className="py-2 px-4 w-full max-w-[1200px]"
           align={"middle"}
-          justify={"space-between"}
+          gutter={[16, 0]}
         >
           <Col
-            span={2}
+            xs={2}
+            md={8}
             className="cursor-pointer"
             onClick={() => handleClickGoHome()}
           >
-            <FontAwesomeIcon icon={faHome} color="white" size="2x" />
+            <FontAwesomeIcon
+              icon={faHome}
+              color="white"
+              className="xs:text-xl md:text-3xl"
+            />
           </Col>
-          <Col span={8}>
+          <Col xs={14} md={8}>
             <SearchInput />
           </Col>
-          <Col>
-            <Row gutter={[16, 0]} align={"middle"}>
-              <Col>
+          <Col xs={8} md={8}>
+            <Row align={"middle"} justify={"end"}>
+              <Col xs={6} md={4}>
                 <ListAddFriendRequests />
               </Col>
-              <Col>
+              <Col xs={18} md={8}>
                 <Dropdown
                   menu={{
                     items,
@@ -83,11 +90,11 @@ const Header = () => {
                   trigger={["click"]}
                 >
                   <div
-                    className="flex gap-4 items-center cursor-pointer"
+                    className="flex xs:gap-1 sm:gap-4 items-center cursor-pointer"
                     key={"qeqqqq"}
                   >
                     <Avatar
-                      size={64}
+                      size={sizeDevice.width < 768 ? 36 : 64}
                       className="bg-green-500"
                       icon={
                         user?.avatar ? (
@@ -95,15 +102,15 @@ const Header = () => {
                             src={user?.avatar}
                             preview={false}
                             className="rounded-full"
-                            width={64}
-                            height={64}
+                            width={sizeDevice.width < 768 ? 36 : 64}
+                            height={sizeDevice.width < 768 ? 36 : 64}
                           />
                         ) : (
                           <FontAwesomeIcon icon={faUser} />
                         )
                       }
                     />
-                    <p className="text-xl text-white">{`${user?.name}`}</p>
+                    <p className="xs:text-sm md:text-xl text-white">{`${user?.name}`}</p>
                   </div>
                 </Dropdown>
               </Col>

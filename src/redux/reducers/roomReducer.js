@@ -18,7 +18,7 @@ const roomSlices = createSlice({
   initialState,
   reducers: {
     setRoomSelected: (state, action) => {
-      state.roomSelected = findRoomById(state.rooms, action.payload.id);
+      state.roomSelected = findRoomById(state.rooms, action.payload?.id);
     },
     createNewRoom: (state, action) => {
       const checkExistsRoom = findRoomById(state.rooms, action.payload?.id);
@@ -48,16 +48,14 @@ const roomSlices = createSlice({
     });
     builder.addCase(fetchRoomId.fulfilled, (state, action) => {
       state.isLoadingRoomSelected = false;
-
       const temp = cloneDeep(state.rooms);
       if (temp.findIndex((x) => x?.id === action.payload?.id) < 0) {
-        const rooms = temp.filter((x) => x.id > 0);
+        const rooms = temp.filter((x) => !(x.id < 0));
         state.rooms = [action.payload, ...rooms];
       } else {
         state.rooms = replaceMessagesToRoom({
           rooms: temp,
-          messages: action.payload?.messages,
-          roomId: action.payload?.id,
+          roomFetch: action.payload,
         });
         if (state.roomSelected?.id === action.payload?.id) {
           state.roomSelected = findRoomById(state.rooms, action.payload?.id);

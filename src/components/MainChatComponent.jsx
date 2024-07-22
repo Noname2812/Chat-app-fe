@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Button, Image, List } from "antd";
+import { Button, List } from "antd";
 import { useAppDispatch, useAppSelector } from "../redux/store";
 import { getAuthState } from "../redux/reducers/authReducers";
 import { getRoomsState } from "../redux/reducers/roomReducer";
 import { fetchRoomId } from "../redux/asyncThunk/roomThunk";
 import { getChatState } from "../redux/reducers/chatReducers";
+import MessageComponent from "./MessageComponent";
 const MainChatComponent = () => {
   const { user } = useAppSelector(getAuthState);
-  const { roomSelected } = useAppSelector(getRoomsState);
+  const { roomSelected, isLoadingRoomSelected } = useAppSelector(getRoomsState);
   const { chatting } = useAppSelector(getChatState);
   const [showButton, setShowButton] = useState(false);
   const ref = useRef(null);
@@ -21,14 +22,19 @@ const MainChatComponent = () => {
     }
   }, []);
   useEffect(() => {
-    if (chatting === "Completed" && roomSelected && roomSelected?.id > 0) {
+    if (chatting === "Completed" && roomSelected && !isLoadingRoomSelected) {
       if (ref?.current) {
         ref.current.scrollTop = ref.current.scrollHeight;
       }
+      if (roomSelected.id < 0) {
+        return;
+      }
       dispatch(fetchRoomId({ roomId: roomSelected?.id }));
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, chatting]);
+  }, [dispatch, chatting, isLoadingRoomSelected]);
+
   useEffect(() => {
     const scrollableDiv = ref.current;
     if (scrollableDiv) {
@@ -37,7 +43,9 @@ const MainChatComponent = () => {
         scrollableDiv.removeEventListener("scroll", handleScroll);
       };
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   return (
     <div
       id="scrollableDiv"
@@ -72,40 +80,7 @@ const MainChatComponent = () => {
           dataSource={[...roomSelected?.messages].reverse() || []}
           renderItem={(item) => (
             <div key={item.id}>
-              {item.imageUrl && (
-                <div
-                  className={`flex ${
-                    user?.id === item.userId ? "justify-end" : ""
-                  } p-2 `}
-                >
-                  <Image
-                    src={item.imageUrl}
-                    alt={item.id}
-                    width={150}
-                    height={150}
-                  />
-                </div>
-              )}
-              {item.content && (
-                <div
-                  className={`flex ${
-                    user?.id === item.userId ? "justify-end" : ""
-                  } p-2 `}
-                >
-                  <div
-                    style={{
-                      maxWidth: "75%",
-                      minWidth: "10%",
-                      wordBreak: "break-word",
-                    }}
-                    className={`p-2 rounded ${
-                      user?.id === item.userId ? "bg-blue-400 " : ""
-                    } shadow-xl`}
-                  >
-                    <p className="text-start">{`${item.content}`}</p>
-                  </div>
-                </div>
-              )}
+              <MessageComponent user={user} data={item} />
             </div>
           )}
         />

@@ -4,7 +4,7 @@ import { store } from "../redux/store";
 import { logout, setNewToken } from "../redux/reducers/authReducers";
 import dayjs from "dayjs";
 const axiosClient = axios.create({
-  baseURL: "http://localhost:5264/api",
+  baseURL: process.env.BASE_URL,
   headers: {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",

@@ -30,7 +30,7 @@ const ListAddFriendRequests = () => {
     setItems(
       listAddFriendRequests?.map((request) => ({
         label: (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col xs:gap-2 sm:gap-4">
             <Row gutter={[16, 0]} align={"middle"}>
               <Col>
                 <Avatar src={request?.avatar} />
@@ -63,7 +63,11 @@ const ListAddFriendRequests = () => {
       }}
     >
       <div className="flex gap-4 items-center cursor-pointer">
-        <FontAwesomeIcon icon={faBell} color="white" size="2xl" />
+        <FontAwesomeIcon
+          icon={faBell}
+          color="white"
+          className="xs:text-xl md:text-3xl"
+        />
       </div>
     </Dropdown>
   );

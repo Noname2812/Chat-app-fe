@@ -1,10 +1,10 @@
 import dayjs from "dayjs";
 
-export const replaceMessagesToRoom = ({ rooms, roomId, messages }) => {
+export const replaceMessagesToRoom = ({ rooms, roomFetch }) => {
   const updatedRooms = rooms.map((room) => {
-    if (Number(room?.id) === Number(roomId)) {
+    if (room?.id === roomFetch?.id) {
       let seenIds = new Set();
-      let newMessages = [...room.messages, ...messages];
+      let newMessages = [...room.messages, ...roomFetch?.messages];
       let uniqueArr = newMessages.filter((item) => {
         if (!seenIds.has(item.id)) {
           seenIds.add(item.id);
@@ -12,7 +12,6 @@ export const replaceMessagesToRoom = ({ rooms, roomId, messages }) => {
         }
         return false;
       });
-
       uniqueArr.sort((a, b) => new Date(b.createAt) - new Date(a.createAt));
       return {
         ...room,
@@ -21,7 +20,11 @@ export const replaceMessagesToRoom = ({ rooms, roomId, messages }) => {
     }
     return room;
   });
-  return updatedRooms;
+
+  const result = updatedRooms.sort(
+    (a, b) => new Date(b.modifiedDate) - new Date(a.modifiedDate)
+  );
+  return result;
 };
 export const findRoomById = (rooms, roomId) => {
   const room = rooms.find((room) => room.id === roomId);
@@ -52,4 +55,25 @@ export const formatTime = (time) => {
   }
   const differenceInDays = currentTime.diff(targetTime, "day");
   return differenceInDays + " days ago";
+};
+export const getNameRoomChat = (room, userId) => {
+  if (room.isPrivate) {
+    const userRoomChat = room?.userRoomChat;
+    return (
+      `Chat with ` +
+      userRoomChat.find((item) => item.user.id !== userId)?.user?.name
+    );
+  }
+  return room.name;
+};
+export const getImageRoomChat = (room, userId) => {
+  if (room.isPrivate) {
+    const userRoomChat = room?.userRoomChat;
+    return userRoomChat.find((item) => item.user.id !== userId)?.user?.avatar;
+  }
+  return room.avatar;
+};
+export const getAvatarMessage = (message, userId) => {
+  const userRoomChat = message;
+  return userRoomChat.find((item) => item.user.id !== userId)?.user?.avatar;
 };

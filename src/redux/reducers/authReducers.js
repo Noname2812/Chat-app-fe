@@ -17,7 +17,6 @@ const authSlices = createSlice({
         token: action.payload?.data?.token,
         refreshToken: action.payload?.data?.refreshToken,
       };
-      state.listFriends = action.payload?.data?.friends;
     },
     setNewToken: (state, action) => {
       const { token, refreshToken } = action.payload;
@@ -26,9 +25,6 @@ const authSlices = createSlice({
     logout: (state) => {
       state.user = undefined;
       HubConnection.disconnect();
-    },
-    getFriendsOnline: (state, action) => {
-      state.listFriends = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -46,7 +42,6 @@ const authSlices = createSlice({
     });
   },
 });
-export const { loginSuccess, getFriendsOnline, setNewToken, logout } =
-  authSlices.actions;
+export const { loginSuccess, setNewToken, logout } = authSlices.actions;
 export default authSlices.reducer;
 export const getAuthState = (state) => state.auth;

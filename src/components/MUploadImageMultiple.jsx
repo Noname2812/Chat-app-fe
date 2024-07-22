@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Form, Image, Modal, Upload } from "antd";
+import { Button, Form, Image, Modal, Upload } from "antd";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCamera } from "@fortawesome/free-solid-svg-icons";
 
 const MUploadImageMultiple = (props) => {
   const { children, initFileList, ...rest } = props;
@@ -63,23 +65,13 @@ const MUploadImageMultiple = (props) => {
           accept="image/*"
           {...rest}
         >
-          {!props.disabled && fileList.length < 5 && "+ Upload"}
+          {!props.disabled && fileList.length < 5 && (
+            <Button>
+              <FontAwesomeIcon icon={faCamera} />
+            </Button>
+          )}
         </Upload>
       </Form.Item>
-      <Modal
-        open={previewOpen}
-        // title={previewTitle}
-        footer={null}
-        onCancel={handleCancel}
-        className="flex justify-center"
-      >
-        <Image
-          alt="example"
-          style={{ width: "100%" }}
-          src={previewImage}
-          preview={false}
-        />
-      </Modal>
     </>
   );
 };

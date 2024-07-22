@@ -21,7 +21,7 @@ const LoginPage = ({ user }) => {
       toast.success("Login successfully !");
       navigate("/");
     } catch (error) {
-      toast.error(error.response.data?.errors?.message || "Có lỗi xảy ra !");
+      toast.error(error.response?.data?.errors?.message || "Có lỗi xảy ra !");
       setLoading(false);
     }
   };

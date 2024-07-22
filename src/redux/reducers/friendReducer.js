@@ -3,16 +3,20 @@ import {
   acceptAddFriendRequest,
   getListAddFriendRequests,
 } from "../asyncThunk/userThunk";
-import { toast } from "react-toastify";
 
 const initialState = {
+  listFriends: [],
   listAddFriendRequests: [],
   updating: "pending" | "completed" | "error",
 };
 const friendSlices = createSlice({
   name: "friendReducers",
   initialState,
-  reducers: {},
+  reducers: {
+    getFriendsOnline: (state, action) => {
+      state.listFriends = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getListAddFriendRequests.fulfilled, (state, action) => {
       state.listAddFriendRequests = action.payload?.data;
@@ -28,6 +32,6 @@ const friendSlices = createSlice({
     });
   },
 });
-// export const {} = friendSlices.actions;
+export const { getFriendsOnline } = friendSlices.actions;
 export default friendSlices.reducer;
 export const getFriendState = (state) => state.friend;

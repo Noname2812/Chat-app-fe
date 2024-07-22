@@ -1,5 +1,5 @@
+import dayjs from "dayjs";
 import { roomApi } from "../api/roomApi";
-import { getAuthState } from "../redux/reducers/authReducers";
 import {
   createNewRoom,
   getRoomsState,
@@ -8,15 +8,16 @@ import {
 import { useAppDispatch, useAppSelector } from "../redux/store";
 import { findRoomById, formatTime } from "../utils/functionHelper";
 import { Avatar } from "antd";
+import { getFriendState } from "../redux/reducers/friendReducer";
 
 const ListFriendsComponent = () => {
-  const { user, listFriends } = useAppSelector(getAuthState);
+  const { listFriends } = useAppSelector(getFriendState);
   const { rooms } = useAppSelector(getRoomsState);
   const dispatch = useAppDispatch();
   const handleChoice = async ({ id, name }) => {
     try {
       const newRoom = {
-        id: Number(user.id + id) * -1,
+        id: dayjs().unix() * -1,
         name: "Chat với " + name,
         message: [],
         isPrivate: true,
@@ -24,7 +25,7 @@ const ListFriendsComponent = () => {
       };
       const res = await roomApi.getPrivateRoomWithUserId(id);
       if (res.data?.data) {
-        if (!findRoomById(rooms, Number(res.data?.data?.id))) {
+        if (!findRoomById(rooms, res.data?.data?.id)) {
           dispatch(createNewRoom(newRoom));
         } else {
           dispatch(setRoomSelected(res.data?.data));

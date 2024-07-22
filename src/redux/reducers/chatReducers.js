@@ -14,13 +14,13 @@ const chatSlices = createSlice({
       state.chatting = "Pending";
     });
     builder.addCase(sendMessages.rejected, (state, action) => {
-      state.chatting = "Completed";
+      state.chatting = "Failed";
     });
     builder.addCase(sendMessages.fulfilled, (state, action) => {
       state.chatting = "Completed";
     });
   },
 });
-export const {} = chatSlices.actions;
+// export const {} = chatSlices.actions;
 export default chatSlices.reducer;
 export const getChatState = (state) => state.chat;
