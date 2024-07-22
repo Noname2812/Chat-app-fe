@@ -4,7 +4,7 @@ import { store } from "../redux/store";
 import { logout, setNewToken } from "../redux/reducers/authReducers";
 import dayjs from "dayjs";
 const axiosClient = axios.create({
-  baseURL: process.env.BASE_URL,
+  baseURL: process.env.REACT_APP_BASE_URL,
   headers: {
     "Content-Type": "application/json",
     "Access-Control-Allow-Origin": "*",
@@ -49,7 +49,7 @@ axiosClient.interceptors.request.use(
 const refreshToken = async ({ accessToken, refreshToken }) => {
   try {
     const response = await fetch(
-      "http://localhost:5264/api/auth/refresh-token",
+      `${process.env.REACT_APP_BASE_URL}/auth/refresh-token`,
       {
         method: "POST",
         headers: {
